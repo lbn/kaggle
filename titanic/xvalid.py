@@ -15,6 +15,19 @@ class Report(dict):
     def __setattr__(self, key, value):
         self.__setitem__(key, value)
 
+    def __str__(self):
+        report = "# Summary\n"
+        report += "\n```\n"
+        report += self.summary + "\n"
+        report += "```\n\n"
+
+        report += "# Accuracy\n"
+        report += "\n```\n"
+        report += str(self.accuracy) + "\n"
+        report += "```\n\n"
+        return report
+
+
 class CrossValidator(object):
     def __init__(self, data):
         self.data = data
