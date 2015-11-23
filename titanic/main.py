@@ -1,37 +1,12 @@
-from collections import Counter
-
-import numpy as np
-from sklearn.svm import LinearSVC
-
-import data
-from config import config
 from xvalid import CrossValidator
-
-def categorise(vec):
-    choices = tuple(Counter(vec).keys())
-    return np.vstack([vec == choice for choice in choices]).T
-
-def get_features(dataset):
-    mask = np.isfinite(dataset["Age"])
-    mask &= [type(p) == str for p in dataset["Embarked"]]
-    mask &= np.isfinite(dataset["Survived"])
-
-    dataset = dataset[mask]
-
-    embarked = categorise(dataset["Embarked"])
-    sex = categorise(dataset["Sex"])
-    pclass = categorise(dataset["Pclass"])
-    sibsp = np.array((dataset["SibSp"],)).T
-    parch = np.array((dataset["Parch"],)).T
-
-    return np.hstack([embarked, sex, pclass, sibsp, parch]), np.array(dataset["Survived"])
+import data
+from classifier import BasicSVM
 
 
 def main():
-    X, y = get_features(data.train)
-    xv = CrossValidator(X, y)
-    clf = LinearSVC()
-    report = xv.run(clf)
+    xv = CrossValidator(data.train)
+    basicSVM = BasicSVM()
+    report = xv.run(basicSVM)
 
     print("# Summary")
     print("\n```")

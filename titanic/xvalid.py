@@ -16,13 +16,16 @@ class Report(dict):
         self.__setitem__(key, value)
 
 class CrossValidator(object):
-    def __init__(self, X, y):
+    def __init__(self, data):
+        self.data = data
+
+    def run(self, clf):
+        X, y = clf.preprocess(self.data)
         skf_config = config.xvalidation
         self.skf = StratifiedShuffleSplit(y, **skf_config)
         self.X = X
         self.y = y
 
-    def run(self, clf):
         report = Report()
 
         X, y = self.X, self.y
