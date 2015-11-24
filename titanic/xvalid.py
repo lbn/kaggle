@@ -6,8 +6,9 @@ from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
 class Report(dict):
-    def __init__(self):
+    def __init__(self, name):
         super(Report, self).__init__()
+        self.name = name
 
     def __getattr__(self, attr):
         return self.get(attr)
@@ -16,15 +17,12 @@ class Report(dict):
         self.__setitem__(key, value)
 
     def __str__(self):
-        report = "# Summary\n"
-        report += "\n```\n"
-        report += self.summary + "\n"
-        report += "```\n\n"
+        report = "# " + self.name + "\n"
+        report += "## Summary\n"
+        report += "\n".join([" "*4 + line for line in self.summary.split("\n")]) + "\n\n"
 
-        report += "# Accuracy\n"
-        report += "\n```\n"
-        report += str(self.accuracy) + "\n"
-        report += "```\n\n"
+        report += "## Accuracy\n"
+        report += " "*4 + str(self.accuracy) + "\n"
         return report
 
 
@@ -39,7 +37,7 @@ class CrossValidator(object):
         self.X = X
         self.y = y
 
-        report = Report()
+        report = Report(clf.clf.__class__.__name__)
 
         X, y = self.X, self.y
 
