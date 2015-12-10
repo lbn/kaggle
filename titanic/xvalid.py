@@ -4,6 +4,7 @@ import numpy as np
 from sklearn import metrics
 from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import data
 
 class Report(dict):
     def __init__(self, name):
@@ -31,13 +32,13 @@ class CrossValidator(object):
         self.data = data
 
     def run(self, clf):
-        X, y = clf.preprocess(self.data)
+        X, y = data.split(self.data)
         skf_config = config.xvalidation
         self.skf = StratifiedShuffleSplit(y, **skf_config)
         self.X = X
         self.y = y
 
-        report = Report(clf.clf.__class__.__name__)
+        report = Report(" | ".join([step[0] for step in clf.steps]))
 
         X, y = self.X, self.y
 

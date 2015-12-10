@@ -13,7 +13,7 @@ def main():
 
     classifiers = (BasicSVM, NB, DTC, AdaBoost, GradientBoosting, RandomForest)
     for Classifier in classifiers:
-        report = xv.run(Classifier())
+        report = xv.run(Classifier)
         print(report)
 
     time_taken = time.time() - start
