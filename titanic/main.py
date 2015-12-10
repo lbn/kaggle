@@ -3,7 +3,7 @@ import datetime
 
 from xvalid import CrossValidator
 import data
-from classifier import BasicSVM, NB, DTC, AdaBoost, GradientBoosting, RandomForest
+from classifier import BasicSVM, NB, DTC, AdaBoost, GradientBoosting, RandomForest, XGB
 
 
 def main():
@@ -11,7 +11,7 @@ def main():
 
     start = time.time()
 
-    classifiers = (BasicSVM, NB, DTC, AdaBoost, GradientBoosting, RandomForest)
+    classifiers = (BasicSVM, NB, DTC, AdaBoost, GradientBoosting, RandomForest, XGB)
     for Classifier in classifiers:
         report = xv.run(Classifier)
         print(report)
