@@ -27,7 +27,7 @@ def xvalidate():
 def test():
     clf = GradientBoosting
     X_train, y_train = data.split(data.train)
-    X_test, mask = data.extract_features(data.test, exclude=False)
+    X_test = data.extract_features(data.test)
 
     clf.fit(X_train, y_train)
     labels = clf.predict(X_test)
@@ -37,8 +37,8 @@ def test():
     }).to_csv("submit.csv", index=False)
 
 def main():
-    xvalidate()
-    # test()
+    # xvalidate()
+    test()
 
 if __name__ == "__main__":
     main()
