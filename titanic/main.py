@@ -14,7 +14,7 @@ def xvalidate():
 
     start = time.time()
 
-    classifiers = (GradientBoosting, RandomForest, XGB)
+    classifiers = (GradientBoosting, RandomForest)
     for Classifier in classifiers:
         report = xv.run(Classifier)
         print(report)
@@ -25,7 +25,7 @@ def xvalidate():
     print("Completed in {:.4f}s on {}".format(time_taken, str(datetime.datetime.now())))
 
 def test():
-    clf = GradientBoosting
+    clf = RandomForest
     X_train, y_train = data.split(data.train)
     X_test = data.extract_features(data.test)
 
@@ -37,8 +37,8 @@ def test():
     }).to_csv("submit.csv", index=False)
 
 def main():
-    # xvalidate()
-    test()
+    xvalidate()
+    # test()
 
 if __name__ == "__main__":
     main()

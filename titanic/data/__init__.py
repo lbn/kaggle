@@ -1,6 +1,7 @@
 import os
 from collections import Counter
 from sklearn import preprocessing
+from sklearn.linear_model import SGDRegressor
 
 import pandas as pd
 import numpy as np
@@ -42,6 +43,41 @@ test["Pclass"].fillna(common(train["Pclass"]), inplace=True)
 pclass_enc = preprocessing.LabelBinarizer()
 pclass_enc.fit(train["Pclass"])
 
+parch_enc = preprocessing.LabelBinarizer()
+parch_enc.fit(train["Parch"])
+
+
+def predict_age():
+    mask = ~np.isnan(train["Age"])
+    age_train = train[mask]
+    age_test = train[~mask]
+
+    features = []
+    features.append(embarked_enc.transform(age_train["Embarked"]))
+    features.append(sex_enc.transform(age_train["Sex"]))
+    features.append(title_enc.transform(age_train["Title"]))
+    features.append(pclass_enc.transform(age_train["Pclass"]))
+
+    age_clf = SGDRegressor()
+    X = np.hstack(features)
+    y = np.array(train["Age"][mask]).T
+    age_clf.fit(X, y)
+
+    features = []
+    features.append(embarked_enc.transform(age_test["Embarked"]))
+    features.append(sex_enc.transform(age_test["Sex"]))
+    features.append(title_enc.transform(age_test["Title"]))
+    features.append(pclass_enc.transform(age_test["Pclass"]))
+
+    ages = age_clf.predict(np.hstack(features))
+    j = 0
+    for i in range(len(train)):
+        if ~mask[i]:
+            train.loc[i, "Age"] = ages[j]
+            j += 1
+
+
+# predict_age()
 train["Age"].fillna(np.mean(train["Age"]), inplace=True)
 # Impute test dataset N/A values using the mean values in train
 test["Age"].fillna(np.mean(train["Age"]), inplace=True)
@@ -54,6 +90,8 @@ def extract_features(dataset):
 
     sibsp = np.array((dataset["SibSp"],)).T
     parch = np.array((dataset["Parch"],)).T
+    # parch = np.array(dataset["Parch"] > 0, dtype=np.uint8).reshape(-1, 1)
+
     age = np.array((dataset["Age"],)).T
     fare = np.array((dataset["Fare"],)).T
 
